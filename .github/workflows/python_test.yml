@@ -8,13 +8,16 @@ on:
 env:
   SEMGREP_R2C_INTERNAL_EXPLICIT_SEMGREPIGNORE: ./tests/assets/.semgrepignore
 
+permissions:
+  contents: read # access to check out code and install dependencies
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: [3.9, '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
     - uses: actions/checkout@v4
@@ -22,6 +25,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
 
     - name: Install dependencies
       run: |
