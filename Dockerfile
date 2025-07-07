@@ -1,6 +1,8 @@
 FROM python:3.13-alpine
 
-RUN apk install gcc
+RUN apk update && \
+    apk upgrade && \
+    apk add gcc
 
 COPY . /usr/src/njsscan
 
