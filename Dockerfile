@@ -6,13 +6,11 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/njsscan/venv/bin:$PATH"
 
-RUN mkdir -p /njsscan/venv
-
-COPY --chown=root:root . /njsscan
+COPY . /njsscan
 
 WORKDIR /njsscan
 
-RUN python -m venv /njsscan/venv
+RUN sudo python -m venv /njsscan/venv
 RUN pip install -e .
 
 FROM chainguard/python:latest@sha256:e0dbf1d2dd8116bc4c5b9066281b1939777eba163e7e7801d3d34fc8ebe5bedb
