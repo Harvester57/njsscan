@@ -47,6 +47,7 @@ jobs:
             deb.debian.org:80
             debian.map.fastlydns.net:80
             dl-cdn.alpinelinux.org:443
+            files.pythonhosted.org:443
             ghcr.io:443
             github.com:443
             objects.githubusercontent.com:443
