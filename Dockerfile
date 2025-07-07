@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/njsscan/venv/bin:$PATH"
 
-COPY . /njsscan
+COPY --chown=root:root . /njsscan
 
 WORKDIR /njsscan
 
