@@ -1,8 +1,6 @@
-FROM python:3.14-rc-slim
+FROM python:3.13-alpine
 
-RUN apt-get update \
-&& apt-get install gcc -y \
-&& apt-get clean
+RUN apk install gcc
 
 COPY . /usr/src/njsscan
 
