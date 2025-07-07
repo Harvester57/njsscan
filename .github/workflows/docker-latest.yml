@@ -55,6 +55,7 @@ jobs:
             production.cloudflare.docker.com:443
             pypi.org:443
             registry-1.docker.io:443
+            rekor.sigstore.dev:443
             tuf-repo-cdn.sigstore.dev:443
 
       - name: Checkout repository
