@@ -11,7 +11,7 @@ RUN python -m venv /njsscan/venv
 
 COPY . /njsscan
 
-RUN pip install -e .
+RUN pip install -e . --no-cache-dir
 
 FROM chainguard/python:latest@sha256:e0dbf1d2dd8116bc4c5b9066281b1939777eba163e7e7801d3d34fc8ebe5bedb
 
