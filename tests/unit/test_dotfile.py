@@ -10,6 +10,7 @@ TMPL_IDS = [
 ]
 
 NJS_IDS = [
+    'express_open_redirect',
     'node_aes_ecb',
     'generic_path_traversal',
 ]
