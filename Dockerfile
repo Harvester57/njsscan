@@ -11,7 +11,7 @@ RUN python -m venv /njsscan/venv
 
 COPY . /njsscan
 
-RUN pip install -e . --no-cache-dir
+RUN pip install .
 
 RUN /njsscan/venv/bin/njsscan
 
