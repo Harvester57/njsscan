@@ -4,7 +4,7 @@ updates:
   directory: "/"
   commit-message:
     prefix: "docker"
-  labels: [ 'docker ' ]
+  labels: [ 'docker' ]
   assignees:
   - "Harvester57"
   schedule:
@@ -20,7 +20,7 @@ updates:
   directory: "/"
   commit-message:
     prefix: "actions"
-  labels: [ 'github_actions ' ]
+  labels: [ 'github-actions' ]
   assignees:
   - "Harvester57"
   schedule:
