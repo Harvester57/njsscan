@@ -13,6 +13,10 @@ COPY . /njsscan
 
 RUN pip install -e . --no-cache-dir
 
+RUN ls /njsscan/venv
+RUN ls /njsscan
+RUN ls //njsscan/venv/bin
+
 FROM chainguard/python:latest@sha256:191d13a12981ab476bafcc311aafea78d26948db0c26c22c1b35ff072d5e0ab4
 
 LABEL maintainer="florian.stosse@gmail.com"
@@ -31,8 +35,5 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH="/venv/bin:$PATH"
 
 COPY --from=builder /njsscan/venv /venv
-
-RUN ls /venv
-RUN ls /venv/bin
 
 ENTRYPOINT ["njsscan"]
