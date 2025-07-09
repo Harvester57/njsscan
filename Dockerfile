@@ -22,7 +22,7 @@ LABEL description="njsscan tool, built using Python Chainguard based image"
 LABEL license="MIT license"
 
 ENV TZ="Europe/Paris"
-ENV PATH="/venv/bin:$PATH"
+ENV PATH="/njsscan/venv/bin:$PATH"
 
 WORKDIR /njsscan
 
@@ -30,7 +30,7 @@ ENV LANG=C.UTF-8
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/venv/bin:$PATH"
 
-COPY --from=builder /njsscan/venv /venv
+COPY --from=builder . /njsscan/venv
 
 RUN njsscan
 
