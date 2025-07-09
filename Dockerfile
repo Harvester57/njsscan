@@ -32,4 +32,7 @@ ENV PATH="/venv/bin:$PATH"
 
 COPY --from=builder /njsscan/venv /venv
 
+RUN ls /venv
+RUN ls /venv/bin
+
 ENTRYPOINT ["njsscan"]
