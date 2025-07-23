@@ -1,5 +1,5 @@
 # Cf. https://hub.docker.com/r/chainguard/python/
-FROM chainguard/python:latest-dev@sha256:d8bacad8da41bec3b7fcff09837568c8de604c2fd761a0250d2af35119b1c328 AS builder
+FROM chainguard/python:latest-dev@sha256:f3afa81b8df6bf03f640bf9ee694c5cdc0fcc4bc44bdd86a5683a24d92ff2dba AS builder
 
 ENV LANG=C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -13,7 +13,7 @@ COPY . /njsscan
 
 RUN pip install . --no-cache-dir
 
-FROM chainguard/python:latest-dev@sha256:d8bacad8da41bec3b7fcff09837568c8de604c2fd761a0250d2af35119b1c328
+FROM chainguard/python:latest-dev@sha256:f3afa81b8df6bf03f640bf9ee694c5cdc0fcc4bc44bdd86a5683a24d92ff2dba
 
 LABEL maintainer="florian.stosse@gmail.com"
 LABEL lastupdate="2025-07-08"
