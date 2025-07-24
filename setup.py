@@ -50,7 +50,7 @@ setup(
     install_requires=[
         'colorama>=0.4.5',
         'libsast>=3.1.4',
-        'semgrep==1.128.1',
+        'semgrep==1.130.0',
         'sarif-om>=1.0.4',
         'jschema-to-python>=1.2.3',
         'tabulate>=0.8.10',
