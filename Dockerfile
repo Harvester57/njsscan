@@ -21,7 +21,7 @@ USER nonroot
 FROM chainguard/python:latest@sha256:b4e613576560761bdc76b3692e8020e1e44303a56048368d8f4f98bb16d245bf
 
 LABEL maintainer="florian.stosse@gmail.com"
-LABEL lastupdate="2025-07-08"
+LABEL lastupdate="2025-08-06"
 LABEL author="Florian Stosse"
 LABEL description="njsscan tool, built using Python Chainguard based image"
 LABEL license="MIT license"
