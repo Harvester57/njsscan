@@ -50,7 +50,7 @@ setup(
     install_requires=[
         'colorama',
         'libsast',
-        'semgrep=',
+        'semgrep',
         'sarif-om',
         'jschema-to-python',
         'tabulate',
