@@ -6,12 +6,17 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /njsscan
-RUN python -m venv venv
-ENV PATH="/njsscan/venv/bin:$PATH"
+COPY . .
 
-COPY . /njsscan
+WORKDIR /action
+RUN python3 -m venv /action && source /action/bin/activate && python3 -m pip install --upgrade pip
+RUN /action/bin/pip3 install /njsscan
+ENV PATH="/action/bin:$PATH"
 
-RUN pip install . --no-cache-dir
+USER root
+RUN rm -rf /njsscan
+
+USER nonroot
 
 FROM chainguard/python:latest@sha256:b4e613576560761bdc76b3692e8020e1e44303a56048368d8f4f98bb16d245bf
 
@@ -27,8 +32,8 @@ ENV LANG=C.UTF-8
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV TZ="Europe/Paris"
-ENV PATH="/venv/bin:$PATH"
 
-COPY --from=builder /njsscan/venv /venv
+COPY --from=builder /action /action
+ENV PATH="/action/bin:$PATH"
 
-ENTRYPOINT [ "python3", "/venv/bin/njsscan" ]
+ENTRYPOINT [ "python3", "/action/bin/njsscan" ]
