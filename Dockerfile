@@ -1,5 +1,5 @@
 # Cf. https://hub.docker.com/r/chainguard/python/
-FROM chainguard/python:latest-dev@sha256:f0342a9d65009acf1c72146a7a1ea408cf4d65b3adff2dcbe23a736056b115cc AS builder
+FROM chainguard/python:latest-dev@sha256:21c60b5442f0adf49821a3c7d1c30ff0c3c13586547b06dadc32c78613df4673 AS builder
 
 ENV LANG=C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -18,7 +18,7 @@ RUN rm -rf /njsscan
 
 USER nonroot
 
-FROM chainguard/python:latest@sha256:7a17326be63f9a7c4f1f7bda460e50c2123c18508afdbb6634e0f24085680425
+FROM chainguard/python:latest@sha256:e5cd2fd57ba08b39e49ed6a02d2192a11247600b7f2d4d8b79911d9607b789bf
 
 LABEL maintainer="florian.stosse@gmail.com"
 LABEL lastupdate="2025-08-06"
