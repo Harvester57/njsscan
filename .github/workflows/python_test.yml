@@ -25,7 +25,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         pip-install: tox semgrep tox-extra
-        cache: 'pip'
 
     - name: Lint
       run: |
