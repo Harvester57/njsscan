@@ -9,21 +9,21 @@ rules:
         - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
       - pattern-either:
           - pattern: |
-              dangerouslySetInnerHTML={{__html: <... $REQ.$QUERY ...>}}
+              <$TAG ... dangerouslySetInnerHTML={{__html: <... $REQ.$QUERY ...>}} ... />
           - pattern: |
-              dangerouslySetInnerHTML={{__html: <... $REQ.$QUERY.$VAR ...>}}
+              <$TAG ... dangerouslySetInnerHTML={{__html: <... $REQ.$QUERY.$VAR ...>}} ... />
           - pattern: |
-              dangerouslySetInnerHTML={{__html: <... $REQ.$BODY ...>}}
+              <$TAG ... dangerouslySetInnerHTML={{__html: <... $REQ.$BODY ...>}} ... />
           - pattern: |
-              dangerouslySetInnerHTML={{__html: <... $REQ.$BODY.$VAR ...>}}
+              <$TAG ... dangerouslySetInnerHTML={{__html: <... $REQ.$BODY.$VAR ...>}} ... />
           - pattern: |
               $INP = <... $REQ.$QUERY.$VAR ...>;
               ...
-              dangerouslySetInnerHTML={{__html: <... $INP ...>}}
+              <$TAG ... dangerouslySetInnerHTML={{__html: <... $INP ...>}} ... />
           - pattern: |
               $INP = <... $REQ.$BODY.$VAR ...>;
               ...
-              dangerouslySetInnerHTML={{__html: <... $INP ...>}}
+              <$TAG ... dangerouslySetInnerHTML={{__html: <... $INP ...>}} ... />
     message: >-
       Untrusted user input is passed to React's dangerouslySetInnerHTML.
       This can result in Cross Site Scripting (XSS). Sanitize the input
@@ -37,7 +37,7 @@ rules:
   - id: react_dangerously_set_innerhtml_generic
     patterns:
       - pattern: |
-          dangerouslySetInnerHTML={{__html: $VAR}}
+          <$TAG ... dangerouslySetInnerHTML={{__html: $VAR}} ... />
     message: >-
       React dangerouslySetInnerHTML is used. If the value is derived from
       user input, this can result in Cross Site Scripting (XSS). Ensure
