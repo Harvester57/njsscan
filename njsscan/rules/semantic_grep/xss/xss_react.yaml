@@ -1,0 +1,50 @@
+rules:
+  - id: react_dangerously_set_innerhtml
+    patterns:
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              dangerouslySetInnerHTML={{__html: <... $REQ.$QUERY ...>}}
+          - pattern: |
+              dangerouslySetInnerHTML={{__html: <... $REQ.$QUERY.$VAR ...>}}
+          - pattern: |
+              dangerouslySetInnerHTML={{__html: <... $REQ.$BODY ...>}}
+          - pattern: |
+              dangerouslySetInnerHTML={{__html: <... $REQ.$BODY.$VAR ...>}}
+          - pattern: |
+              $INP = <... $REQ.$QUERY.$VAR ...>;
+              ...
+              dangerouslySetInnerHTML={{__html: <... $INP ...>}}
+          - pattern: |
+              $INP = <... $REQ.$BODY.$VAR ...>;
+              ...
+              dangerouslySetInnerHTML={{__html: <... $INP ...>}}
+    message: >-
+      Untrusted user input is passed to React's dangerouslySetInnerHTML.
+      This can result in Cross Site Scripting (XSS). Sanitize the input
+      using a library like DOMPurify before rendering.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a7
+      cwe: cwe-79
+  - id: react_dangerously_set_innerhtml_generic
+    patterns:
+      - pattern: |
+          dangerouslySetInnerHTML={{__html: $VAR}}
+    message: >-
+      React dangerouslySetInnerHTML is used. If the value is derived from
+      user input, this can result in Cross Site Scripting (XSS). Ensure
+      the content is properly sanitized using a library like DOMPurify.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a7
+      cwe: cwe-79

@@ -54,6 +54,7 @@ GOOD_CONTROLS_ID = {
     'helmet_header_check_csp',
     'helmet_header_check_expect_ct',
     'helmet_header_feature_policy',
+    'helmet_header_permissions_policy',
     'helmet_header_frame_guard',
     'helmet_header_dns_prefetch',
     'helmet_header_x_powered_by',

@@ -1,0 +1,72 @@
+rules:
+  - id: express_session_no_secure
+    patterns:
+      - pattern-inside: |
+          require('express-session')
+          ...
+      - pattern: |
+          session({cookie: {secure: false}, ...})
+    message: >-
+      Express session cookie 'secure' flag is set to false. Session cookies
+      will be sent over unencrypted HTTP connections, allowing session
+      hijacking via network sniffing. Set 'secure: true' in production.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a7
+      cwe: cwe-614
+  - id: express_session_no_httponly
+    patterns:
+      - pattern-inside: |
+          require('express-session')
+          ...
+      - pattern: |
+          session({cookie: {httpOnly: false}, ...})
+    message: >-
+      Express session cookie 'httpOnly' flag is set to false. This allows
+      client-side JavaScript to access the session cookie, making it
+      vulnerable to XSS-based session theft. Set 'httpOnly: true'.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a7
+      cwe: cwe-1004
+  - id: express_session_secret_hardcoded
+    patterns:
+      - pattern-inside: |
+          require('express-session')
+          ...
+      - pattern-not: |
+          session({secret: $ENV.$VAR, ...})
+      - pattern-not: |
+          session({secret: $ENV[$VAR], ...})
+      - pattern: |
+          session({secret: "...", ...})
+    message: >-
+      Express session secret is hardcoded. Store the session secret in an
+      environment variable to prevent session forgery if source code is
+      exposed.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a2
+      cwe: cwe-798
+  - id: cookie_parser_secret_hardcoded
+    patterns:
+      - pattern-inside: |
+          require('cookie-parser')
+          ...
+      - pattern: |
+          cookieParser("...")
+    message: >-
+      Cookie parser secret is hardcoded. Store the secret in an environment
+      variable to prevent signed cookie forgery if source code is exposed.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a2
+      cwe: cwe-798

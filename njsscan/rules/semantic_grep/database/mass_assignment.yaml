@@ -1,0 +1,63 @@
+rules:
+  - id: node_mass_assignment_sequelize
+    patterns:
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $MODEL.create($REQ.body, ...)
+          - pattern: |
+              $MODEL.create($REQ.body)
+          - pattern: |
+              $INSTANCE.update($REQ.body, ...)
+          - pattern: |
+              $INSTANCE.update($REQ.body)
+          - pattern: |
+              $MODEL.update($REQ.body, ...)
+          - pattern: |
+              $MODEL.bulkCreate($REQ.body, ...)
+    message: >-
+      User-controlled request body is passed directly to a Sequelize
+      create, update, or bulkCreate method. This may allow mass assignment
+      attacks where an attacker sets fields they should not control (e.g.
+      isAdmin, role). Explicitly whitelist allowed fields or use a DTO.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a1
+      cwe: cwe-915
+  - id: node_mass_assignment_mongoose
+    patterns:
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              new $MODEL($REQ.body)
+          - pattern: |
+              $MODEL.findByIdAndUpdate($ID, $REQ.body, ...)
+          - pattern: |
+              $MODEL.findOneAndUpdate($QUERY, $REQ.body, ...)
+          - pattern: |
+              $MODEL.updateOne($QUERY, $REQ.body, ...)
+          - pattern: |
+              $MODEL.updateMany($QUERY, $REQ.body, ...)
+    message: >-
+      User-controlled request body is passed directly to a Mongoose model
+      constructor or update method. This may allow mass assignment attacks
+      where an attacker sets fields they should not control (e.g. isAdmin,
+      role). Explicitly whitelist allowed fields or use a DTO.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a1
+      cwe: cwe-915

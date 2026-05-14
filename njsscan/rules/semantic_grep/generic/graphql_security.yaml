@@ -1,0 +1,60 @@
+rules:
+  - id: graphql_introspection_enabled
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              require('apollo-server')
+              ...
+          - pattern-inside: |
+              require('apollo-server-express')
+              ...
+          - pattern-inside: |
+              require('apollo-server-koa')
+              ...
+          - pattern-inside: |
+              require('@apollo/server')
+              ...
+      - pattern: |
+          new $APOLLO({..., introspection: true, ...})
+    message: >-
+      GraphQL introspection is explicitly enabled. In production, this
+      allows attackers to discover the entire API schema including
+      sensitive types and fields. Disable introspection in production
+      by setting 'introspection: false'.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a5
+      cwe: cwe-200
+  - id: graphql_no_depth_limit
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              require('express-graphql')
+              ...
+          - pattern-inside: |
+              require('apollo-server-express')
+              ...
+          - pattern-inside: |
+              require('@apollo/server')
+              ...
+      - pattern-not: |
+          $DEPTH_LIMIT = require('graphql-depth-limit')
+          ...
+      - pattern-either:
+          - pattern: |
+              graphqlHTTP({schema: $SCHEMA, ...})
+          - pattern: |
+              new $APOLLO({schema: $SCHEMA, ...})
+    message: >-
+      GraphQL server is configured without a query depth limit. This may
+      allow attackers to craft deeply nested queries that cause denial of
+      service. Use 'graphql-depth-limit' or equivalent middleware to
+      restrict query depth.
+    languages:
+      - javascript
+    severity: INFO
+    metadata:
+      owasp-web: a5
+      cwe: cwe-400

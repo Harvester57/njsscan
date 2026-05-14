@@ -1,0 +1,74 @@
+rules:
+  - id: node_log_sensitive_data
+    patterns:
+      - pattern-either:
+          - pattern: |
+              console.log(<... password ...>)
+          - pattern: |
+              console.log(<... $REQ.body.password ...>)
+          - pattern: |
+              console.log(<... $REQ.body.token ...>)
+          - pattern: |
+              console.log(<... $REQ.body.secret ...>)
+          - pattern: |
+              console.log(<... $REQ.headers.authorization ...>)
+          - pattern: |
+              console.info(<... password ...>)
+          - pattern: |
+              console.info(<... $REQ.body.password ...>)
+          - pattern: |
+              console.info(<... $REQ.headers.authorization ...>)
+          - pattern: |
+              console.debug(<... password ...>)
+          - pattern: |
+              console.debug(<... $REQ.body.password ...>)
+          - pattern: |
+              console.debug(<... $REQ.headers.authorization ...>)
+    message: >-
+      Sensitive data such as passwords, tokens, secrets, or authorization
+      headers are being logged. This can expose credentials in log files
+      and monitoring systems. Remove sensitive data from log statements or
+      redact them before logging.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a9
+      cwe: cwe-532
+  - id: node_logger_sensitive_data
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $LOGGER.info(<... password ...>)
+          - pattern: |
+              $LOGGER.info(<... $REQ.body.password ...>)
+          - pattern: |
+              $LOGGER.info(<... $REQ.headers.authorization ...>)
+          - pattern: |
+              $LOGGER.debug(<... password ...>)
+          - pattern: |
+              $LOGGER.debug(<... $REQ.body.password ...>)
+          - pattern: |
+              $LOGGER.debug(<... $REQ.headers.authorization ...>)
+          - pattern: |
+              $LOGGER.warn(<... password ...>)
+          - pattern: |
+              $LOGGER.warn(<... $REQ.body.password ...>)
+          - pattern: |
+              $LOGGER.warn(<... $REQ.headers.authorization ...>)
+          - pattern: |
+              $LOGGER.log(<... password ...>)
+          - pattern: |
+              $LOGGER.log(<... $REQ.body.password ...>)
+          - pattern: |
+              $LOGGER.log(<... $REQ.headers.authorization ...>)
+    message: >-
+      Sensitive data such as passwords, tokens, or authorization headers
+      are being logged using a logger. This can expose credentials in log
+      files. Remove sensitive data from log statements or redact them.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a9
+      cwe: cwe-532

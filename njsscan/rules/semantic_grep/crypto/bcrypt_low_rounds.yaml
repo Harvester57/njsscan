@@ -1,0 +1,94 @@
+rules:
+  - id: node_bcrypt_low_rounds
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              require('bcrypt')
+              ...
+          - pattern-inside: |
+              require('bcryptjs')
+              ...
+      - pattern-either:
+          - pattern: |
+              $BCRYPT.hash($PASS, 1, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 2, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 3, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 4, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 5, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 6, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 7, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 8, ...)
+          - pattern: |
+              $BCRYPT.hash($PASS, 9, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 1, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 2, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 3, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 4, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 5, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 6, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 7, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 8, ...)
+          - pattern: |
+              $BCRYPT.hashSync($PASS, 9, ...)
+          - pattern: |
+              $BCRYPT.genSalt(1, ...)
+          - pattern: |
+              $BCRYPT.genSalt(2, ...)
+          - pattern: |
+              $BCRYPT.genSalt(3, ...)
+          - pattern: |
+              $BCRYPT.genSalt(4, ...)
+          - pattern: |
+              $BCRYPT.genSalt(5, ...)
+          - pattern: |
+              $BCRYPT.genSalt(6, ...)
+          - pattern: |
+              $BCRYPT.genSalt(7, ...)
+          - pattern: |
+              $BCRYPT.genSalt(8, ...)
+          - pattern: |
+              $BCRYPT.genSalt(9, ...)
+          - pattern: |
+              $BCRYPT.genSaltSync(1)
+          - pattern: |
+              $BCRYPT.genSaltSync(2)
+          - pattern: |
+              $BCRYPT.genSaltSync(3)
+          - pattern: |
+              $BCRYPT.genSaltSync(4)
+          - pattern: |
+              $BCRYPT.genSaltSync(5)
+          - pattern: |
+              $BCRYPT.genSaltSync(6)
+          - pattern: |
+              $BCRYPT.genSaltSync(7)
+          - pattern: |
+              $BCRYPT.genSaltSync(8)
+          - pattern: |
+              $BCRYPT.genSaltSync(9)
+    message: >-
+      bcrypt is used with a cost factor (salt rounds) less than 10. A low
+      cost factor makes password hashes easier to brute-force. OWASP
+      recommends a minimum cost factor of 10. Use at least 10 rounds for
+      password hashing.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a2
+      cwe: cwe-916

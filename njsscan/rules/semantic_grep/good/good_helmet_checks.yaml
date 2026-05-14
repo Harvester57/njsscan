@@ -76,6 +76,24 @@ rules:
               helmet.featurePolicy(..., {features: ...}, ...)
           - pattern: |
               helmet({featurePolicy: {features: ...}})
+  - id: helmet_header_permissions_policy
+    message: >-
+      Permissions-Policy header is present. This is the modern replacement
+      for Feature-Policy. More information:
+      https://helmetjs.github.io/docs/permissions-policy/
+    languages:
+      - javascript
+    severity: INFO
+    patterns:
+      - pattern-not: |
+          $HELMET(..., {permissionsPolicy: false}, ...)
+      - pattern-either:
+          - pattern: |
+              permissionsPolicy(..., {features: ...}, ...)
+          - pattern: |
+              helmet.permissionsPolicy(..., {features: ...}, ...)
+          - pattern: |
+              helmet({permissionsPolicy: {features: ...}})
   - id: helmet_header_frame_guard
     message: >-
       X-Frame-Options header is present. More information:

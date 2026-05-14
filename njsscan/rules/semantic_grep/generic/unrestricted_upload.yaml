@@ -1,0 +1,60 @@
+rules:
+  - id: node_unrestricted_upload_multer
+    patterns:
+      - pattern-inside: |
+          require('multer')
+          ...
+      - pattern-not: |
+          multer({..., fileFilter: $FILTER, ...})
+      - pattern: |
+          multer({dest: "..."})
+    message: >-
+      Multer is configured without a 'fileFilter' callback. This allows
+      unrestricted file uploads which may lead to remote code execution if
+      executable files are uploaded and served. Define a 'fileFilter' to
+      validate file types and a 'limits' option to restrict file size.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a4
+      cwe: cwe-434
+  - id: node_unrestricted_upload_multer_storage
+    patterns:
+      - pattern-inside: |
+          require('multer')
+          ...
+      - pattern-not: |
+          multer({..., fileFilter: $FILTER, ...})
+      - pattern: |
+          multer({storage: $STORAGE})
+    message: >-
+      Multer is configured with custom storage but without a 'fileFilter'
+      callback. This allows unrestricted file uploads which may lead to
+      remote code execution. Define a 'fileFilter' to validate file types.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a4
+      cwe: cwe-434
+  - id: node_unrestricted_upload_formidable
+    patterns:
+      - pattern-inside: |
+          require('formidable')
+          ...
+      - pattern-not: |
+          $FORM.maxFileSize = ...
+      - pattern: |
+          new $FORMIDABLE(...)
+    message: >-
+      Formidable file upload parser is used without configuring
+      'maxFileSize'. This may allow denial of service attacks through
+      excessively large file uploads. Set 'maxFileSize' to a reasonable
+      limit.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a4
+      cwe: cwe-434

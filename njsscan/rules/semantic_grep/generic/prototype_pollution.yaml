@@ -1,0 +1,94 @@
+rules:
+  - id: node_prototype_pollution_assign
+    patterns:
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $OBJ[$REQ.$BODY.$KEY] = $REQ.$BODY.$VAL
+          - pattern: |
+              $OBJ[$REQ.$QUERY.$KEY] = $REQ.$QUERY.$VAL
+          - pattern: |
+              $INP = $REQ.$BODY.$KEY;
+              ...
+              $OBJ[$INP] = ...
+          - pattern: |
+              $INP = $REQ.$QUERY.$KEY;
+              ...
+              $OBJ[$INP] = ...
+    message: >-
+      User controlled input is used for dynamic property assignment on an
+      object. This can lead to Prototype Pollution if the attacker supplies
+      '__proto__' or 'constructor' as the key. Validate and sanitize property
+      names before assignment.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a8
+      cwe: cwe-1321
+  - id: node_prototype_pollution_merge
+    patterns:
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $LODASH.merge(..., $REQ.$BODY, ...)
+          - pattern: |
+              $LODASH.merge(..., $REQ.$QUERY, ...)
+          - pattern: |
+              $LODASH.defaultsDeep(..., $REQ.$BODY, ...)
+          - pattern: |
+              $LODASH.defaultsDeep(..., $REQ.$QUERY, ...)
+          - pattern: |
+              $JQUERY.extend(true, ..., $REQ.$BODY, ...)
+          - pattern: |
+              $JQUERY.extend(true, ..., $REQ.$QUERY, ...)
+          - pattern: |
+              $INP = $REQ.$BODY;
+              ...
+              $LODASH.merge(..., $INP, ...)
+          - pattern: |
+              $INP = $REQ.$BODY;
+              ...
+              $LODASH.defaultsDeep(..., $INP, ...)
+    message: >-
+      User controlled input is passed to a recursive merge function
+      (lodash.merge, lodash.defaultsDeep, jQuery.extend). This can lead to
+      Prototype Pollution. Use a safe merge library or sanitize user input
+      to remove '__proto__' and 'constructor' keys.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a8
+      cwe: cwe-1321
+  - id: node_prototype_pollution_direct
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $OBJ.__proto__.$PROP = ...
+          - pattern: |
+              $OBJ['__proto__'][$PROP] = ...
+          - pattern: |
+              $OBJ.constructor.prototype.$PROP = ...
+          - pattern: |
+              $OBJ['constructor']['prototype'][$PROP] = ...
+    message: >-
+      Direct modification of '__proto__' or 'constructor.prototype' detected.
+      This results in Prototype Pollution and can lead to denial of service
+      or remote code execution.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a8
+      cwe: cwe-1321

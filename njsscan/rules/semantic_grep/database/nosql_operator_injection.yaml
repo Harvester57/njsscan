@@ -1,0 +1,54 @@
+rules:
+  - id: node_nosql_operator_injection
+    patterns:
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $COLLECTION.find($REQ.body, ...)
+          - pattern: |
+              $COLLECTION.findOne($REQ.body, ...)
+          - pattern: |
+              $COLLECTION.findOne({$FIELD: $REQ.body.$PARAM}, ...)
+          - pattern: |
+              $COLLECTION.find({$FIELD: $REQ.body.$PARAM}, ...)
+          - pattern: |
+              $COLLECTION.updateOne({$FIELD: $REQ.body.$PARAM}, ...)
+          - pattern: |
+              $COLLECTION.updateMany({$FIELD: $REQ.body.$PARAM}, ...)
+          - pattern: |
+              $COLLECTION.deleteOne({$FIELD: $REQ.body.$PARAM}, ...)
+          - pattern: |
+              $COLLECTION.deleteMany({$FIELD: $REQ.body.$PARAM}, ...)
+          - pattern: |
+              $INP = $REQ.body.$PARAM;
+              ...
+              $COLLECTION.find({$FIELD: $INP}, ...)
+          - pattern: |
+              $INP = $REQ.body.$PARAM;
+              ...
+              $COLLECTION.findOne({$FIELD: $INP}, ...)
+          - pattern: |
+              $INP = $REQ.body;
+              ...
+              $COLLECTION.find($INP, ...)
+          - pattern: |
+              $INP = $REQ.body;
+              ...
+              $COLLECTION.findOne($INP, ...)
+    message: >-
+      User-controlled input from request body is passed directly as a
+      MongoDB query filter. An attacker can inject MongoDB operators such as
+      $gt, $ne, or $regex to bypass authentication or extract data. Use
+      input validation libraries like mongo-sanitize or explicitly cast
+      expected types.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a1
+      cwe: cwe-943

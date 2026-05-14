@@ -1,0 +1,46 @@
+rules:
+  - id: node_websocket_no_tls
+    patterns:
+      - pattern-either:
+          - pattern: |
+              new WebSocket('ws://...')
+          - pattern: |
+              new WebSocket("ws://...")
+          - pattern: |
+              $WS = 'ws://...';
+              ...
+              new WebSocket($WS)
+          - pattern: |
+              $WS = "ws://...";
+              ...
+              new WebSocket($WS)
+    message: >-
+      WebSocket connection uses the unencrypted 'ws://' protocol. This
+      allows man-in-the-middle attacks and data interception. Use the
+      encrypted 'wss://' protocol instead.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a3
+      cwe: cwe-319
+  - id: node_websocket_server_no_verify
+    patterns:
+      - pattern-inside: |
+          require('ws')
+          ...
+      - pattern-not: |
+          new $WS.Server({..., verifyClient: $FUNC, ...})
+      - pattern: |
+          new $WS.Server({port: $PORT})
+    message: >-
+      WebSocket server is created without a 'verifyClient' callback. This
+      means any origin can connect to the WebSocket server. Implement a
+      'verifyClient' function to validate the origin of incoming
+      connections.
+    languages:
+      - javascript
+    severity: INFO
+    metadata:
+      owasp-web: a5
+      cwe: cwe-346

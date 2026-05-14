@@ -1,0 +1,82 @@
+rules:
+  - id: node_spawn_shell_injection
+    patterns:
+      - pattern-inside: |
+          require('child_process')
+          ...
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $EXEC.spawn(<... $REQ.$QUERY.$VAR ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $EXEC.spawn(<... $REQ.$QUERY ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $EXEC.spawn(<... $REQ.$BODY.$VAR ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $EXEC.execFile(<... $REQ.$QUERY.$VAR ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $EXEC.execFile(<... $REQ.$QUERY ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $EXEC.execFile(<... $REQ.$BODY.$VAR ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY.$VAR ...>;
+              ...
+              $EXEC.spawn(<... $INP ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY ...>;
+              ...
+              $EXEC.spawn(<... $INP ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $INP = <... $REQ.$BODY.$VAR ...>;
+              ...
+              $EXEC.spawn(<... $INP ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY.$VAR ...>;
+              ...
+              $EXEC.execFile(<... $INP ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY ...>;
+              ...
+              $EXEC.execFile(<... $INP ...>, ..., {shell: true}, ...)
+          - pattern: |
+              $INP = <... $REQ.$BODY.$VAR ...>;
+              ...
+              $EXEC.execFile(<... $INP ...>, ..., {shell: true}, ...)
+    message: >-
+      User controlled data in 'child_process.spawn()' or
+      'child_process.execFile()' with '{shell: true}' can result in Remote
+      OS Command Execution. When 'shell: true' is set, spawn and execFile
+      behave like exec and are vulnerable to shell metacharacter injection.
+      Use spawn without the shell option or validate and sanitize input.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a1
+      cwe: cwe-78
+  - id: node_spawn_shell_no_input
+    patterns:
+      - pattern-inside: |
+          require('child_process')
+          ...
+      - pattern-either:
+          - pattern: |
+              $EXEC.spawn(..., {shell: true}, ...)
+          - pattern: |
+              $EXEC.spawnSync(..., {shell: true}, ...)
+    message: >-
+      'child_process.spawn()' or 'child_process.spawnSync()' is called
+      with '{shell: true}'. This invokes a system shell which increases
+      the attack surface for command injection. Prefer spawn without the
+      shell option when possible.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a1
+      cwe: cwe-78

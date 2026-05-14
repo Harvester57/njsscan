@@ -1,0 +1,20 @@
+rules:
+  - id: node_http_server_no_tls
+    patterns:
+      - pattern-inside: |
+          require('http')
+          ...
+      - pattern: |
+          $HTTP.createServer(...)
+    message: >-
+      Application is using 'http.createServer()' which creates an
+      unencrypted HTTP server. Data transmitted over HTTP is vulnerable to
+      eavesdropping and man-in-the-middle attacks. Use
+      'https.createServer()' with TLS certificates for production, or
+      ensure a TLS-terminating reverse proxy is in front of this server.
+    languages:
+      - javascript
+    severity: INFO
+    metadata:
+      owasp-web: a3
+      cwe: cwe-319

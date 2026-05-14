@@ -29,6 +29,12 @@ controls:
       severity: INFO
       owasp-web: a6
       cwe: cwe-693
+  helmet_header_permissions_policy:
+    metadata:
+      description: 'Helmet Permissions Policy header (replacement for Feature-Policy) is not configured for this application.'
+      severity: INFO
+      owasp-web: a6
+      cwe: cwe-693
   helmet_header_frame_guard:
     metadata:
       description: 'Helmet X Frame Options header is not configured for this application.'

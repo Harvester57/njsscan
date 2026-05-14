@@ -1,0 +1,81 @@
+rules:
+  - id: node_ldap_injection
+    patterns:
+      - pattern-inside: |
+          require('ldapjs')
+          ...
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $CLIENT.search($BASE, {filter: <... $REQ.$QUERY ...>}, ...)
+          - pattern: |
+              $CLIENT.search($BASE, {filter: <... $REQ.$QUERY.$VAR ...>}, ...)
+          - pattern: |
+              $CLIENT.search($BASE, {filter: <... $REQ.$BODY ...>}, ...)
+          - pattern: |
+              $CLIENT.search($BASE, {filter: <... $REQ.$BODY.$VAR ...>}, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY.$VAR ...>;
+              ...
+              $CLIENT.search($BASE, {filter: <... $INP ...>}, ...)
+          - pattern: |
+              $INP = <... $REQ.$BODY.$VAR ...>;
+              ...
+              $CLIENT.search($BASE, {filter: <... $INP ...>}, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY ...>;
+              ...
+              $CLIENT.search($BASE, {filter: <... $INP ...>}, ...)
+          - pattern: |
+              $INP = <... $REQ.$BODY ...>;
+              ...
+              $CLIENT.search($BASE, {filter: <... $INP ...>}, ...)
+    message: >-
+      Untrusted user input concatenated in an LDAP search filter can result
+      in LDAP Injection. An attacker can modify the LDAP query to bypass
+      authentication or access unauthorized data. Use parameterized LDAP
+      filters or sanitize special characters (*, (, ), \, NUL).
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a1
+      cwe: cwe-90
+  - id: node_ldap_injection_activedirectory
+    patterns:
+      - pattern-inside: |
+          require('activedirectory2')
+          ...
+      - pattern-either:
+        - pattern-inside: function ($REQ, $RES, ...) {...}
+        - pattern-inside: function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: $X = function $FUNC($REQ, $RES, ...) {...}
+        - pattern-inside: var $X = function $FUNC($REQ, $RES, ...) {...};
+        - pattern-inside: $APP.$METHOD(..., function $FUNC($REQ, $RES, ...) {...})
+      - pattern-either:
+          - pattern: |
+              $AD.find(<... $REQ.$QUERY.$VAR ...>, ...)
+          - pattern: |
+              $AD.find(<... $REQ.$BODY.$VAR ...>, ...)
+          - pattern: |
+              $INP = <... $REQ.$QUERY.$VAR ...>;
+              ...
+              $AD.find(<... $INP ...>, ...)
+          - pattern: |
+              $INP = <... $REQ.$BODY.$VAR ...>;
+              ...
+              $AD.find(<... $INP ...>, ...)
+    message: >-
+      Untrusted user input in ActiveDirectory find() can result in LDAP
+      Injection.
+    languages:
+      - javascript
+    severity: ERROR
+    metadata:
+      owasp-web: a1
+      cwe: cwe-90

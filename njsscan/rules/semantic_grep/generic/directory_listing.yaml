@@ -1,0 +1,19 @@
+rules:
+  - id: node_directory_listing
+    patterns:
+      - pattern-inside: |
+          require('serve-index')
+          ...
+      - pattern: |
+          serveIndex(...)
+    message: >-
+      Directory listing is enabled using 'serve-index'. This exposes the
+      directory structure and file names to users, potentially revealing
+      sensitive files and application internals. Disable directory listing
+      in production.
+    languages:
+      - javascript
+    severity: WARNING
+    metadata:
+      owasp-web: a6
+      cwe: cwe-548
