@@ -46,7 +46,7 @@ jobs:
 
     - name: Run tests
       run: |
-        tox -e py
+        tox -e ${{ matrix.python-version }}
 
     - name: Clean Up
       run: |
