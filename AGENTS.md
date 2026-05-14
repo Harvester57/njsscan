@@ -56,7 +56,7 @@ To ensure your changes pass the continuous integration pipeline (as defined in `
 *   When adding new security rules (especially `semgrep` rules), ensure they are highly accurate to avoid false positives. 
 *   Always run the Semgrep Rule Validation and Rule Tests (detailed above) when altering these rules.
 
-### 5. Documentation
+### 3. Documentation
 *   If command-line arguments, API methods, or core behaviors are modified, update the `README.md` to reflect these changes.
 *   Maintain clear and concise docstrings for all new or modified Python classes and functions.
 
