@@ -3,8 +3,12 @@ name: "CodeQL Advanced"
 on:
   push:
     branches: [ "master" ]
+    paths-ignore:
+      - Dockerfile
   pull_request:
     branches: [ "master" ]
+    paths-ignore:
+      - Dockerfile
   schedule:
     - cron: '34 6 * * 1'
 

@@ -2,8 +2,12 @@ name: Tests and Semgrep
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - Dockerfile
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - Dockerfile
 
 env:
   SEMGREP_R2C_INTERNAL_EXPLICIT_SEMGREPIGNORE: ./tests/assets/.semgrepignore
