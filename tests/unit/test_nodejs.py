@@ -113,6 +113,7 @@ TRIGGERED = {
     'sequelize_tls': 4,
     'sequelize_tls_cert_validation': 3,
     'sequelize_weak_tls': 4,
+    'express_session_no_httponly': 1,
 }
 CONTROLS = {
     'anti_csrf_control': 0,
@@ -127,6 +128,7 @@ CONTROLS = {
     'helmet_header_check_csp': 0,
     'helmet_header_check_expect_ct': 0,
     'helmet_header_feature_policy': 0,
+    'helmet_header_permissions_policy': 0,
     'helmet_header_ienoopen': 0,
     'helmet_header_xss_filter': 0,
 }

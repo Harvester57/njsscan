@@ -161,6 +161,24 @@ app.use(featurePolicy({
 }))
 
 
+//Permissions Policy (modern replacement for Feature-Policy)
+const helmet = require('helmet')
+app.use(helmet.permissionsPolicy({
+    features: {
+        fullscreen: ["'self'"],
+        geolocation: ["'none'"],
+        camera: ["'none'"]
+    }
+}))
+const permissionsPolicy = require('permissions-policy')
+app.use(permissionsPolicy({
+    features: {
+        vibrate: ["'self'"],
+        syncXhr: ["'none'"]
+    }
+}))
+
+
 //Frameguard
 // Make sure you run "npm install helmet" to get the Helmet package.
 const helmet = require('helmet')

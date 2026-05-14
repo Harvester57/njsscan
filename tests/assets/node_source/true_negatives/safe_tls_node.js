@@ -31,10 +31,10 @@ module.exports = {
 }
 
 
-var http = require('http');
+var https = require('https');
 var curl = require('node-curl');
 
-http.createServer(function (request, response) {
+https.createServer(function (request, response) {
 
     var url = 'https://url';
     url += request.url;

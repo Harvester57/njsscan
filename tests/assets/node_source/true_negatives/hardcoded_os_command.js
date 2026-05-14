@@ -62,10 +62,10 @@ router.post('/', function (req, res) {
 module.exports = router;
 
 
-var http = require("http");
+var https = require("https");
 var url = require("url");
 var exe = require('child_process');
-http.createServer(function (request, response) {
+https.createServer(function (request, response) {
     var parsedUrl = url.parse(request.url, true);
     exe.exec('ping -c 2  google.com', function (err, data) {
         response.end();
