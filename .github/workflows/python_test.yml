@@ -32,7 +32,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install deps
-      run: pipx install tox semgrep tox-extra
+      run: |
+        pipx install tox semgrep
+        pipx inject tox tox-extra
 
     - name: Lint
       run: |
