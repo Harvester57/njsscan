@@ -6,7 +6,7 @@ Made with ![Love](https://cloud.githubusercontent.com/assets/4301109/16754758/82
 [![PyPI version](https://badge.fury.io/py/njsscan.svg)](https://badge.fury.io/py/njsscan)
 [![platform](https://img.shields.io/badge/platform-osx%2Flinux-green.svg)](https://github.com/ajinabraham/njsscan)
 [![License](https://img.shields.io/:license-lgpl3+-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0.en.html)
-[![python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Build](https://github.com/ajinabraham/njsscan/workflows/Build/badge.svg)](https://github.com/ajinabraham/njsscan/actions?query=workflow%3ABuild)
 
 ### Support njsscan
@@ -21,13 +21,13 @@ Made with ![Love](https://cloud.githubusercontent.com/assets/4301109/16754758/82
 
 `pip install njsscan`
 
-Requires Python 3.7+ and supports only Mac and Linux
+Requires Python 3.10+ and supports only Mac and Linux
 
 ## Command Line Options
 
 ```bash
 $ njsscan
-usage: njsscan [-h] [--json] [--sarif] [--sonarqube] [--html] [-o OUTPUT] [-c CONFIG] [--missing-controls] [-w] [-v] [path ...]
+usage: njsscan [-h] [--json] [--sarif] [--sonarqube] [--defectdojo] [--gitlab-sast] [--html] [-o OUTPUT] [-c CONFIG] [--missing-controls] [-w] [-v] [path ...]
 
 positional arguments:
   path                  Path can be file(s) or directories with source code
@@ -37,6 +37,8 @@ optional arguments:
   --json                set output format as JSON
   --sarif               set output format as SARIF 2.1.0
   --sonarqube           set output format compatible with SonarQube
+  --defectdojo          set output format compatible with DefectDojo Generic Findings Import
+  --gitlab-sast         set output format as GitLab SAST report
   --html                set output format as HTML
   -o OUTPUT, --output OUTPUT
                         output filename to save the result
@@ -149,6 +151,10 @@ A `.njsscan` file in the root of the source code directory allows you to configu
   severity-filter:
   - WARNING
   - ERROR
+
+  severity-overrides:
+    express_xss: WARNING
+    node_secret: ERROR
 ```
 
 ## Suppress Findings
@@ -185,13 +191,13 @@ jobs:
     name: njsscan check
     steps:
     - name: Checkout the code
-      uses: actions/checkout@v4.2.2
-    - uses: actions/setup-python@v5.3.0
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
         python-version: '3.12'
     - name: nodejsscan scan
       id: njsscan
-      uses: ajinabraham/njsscan-action@master
+      uses: ajinabraham/njsscan-action@231750a435d85095d33be7d192d52ec650625146 # v9
       with:
         args: '.'
 ```
@@ -214,17 +220,17 @@ jobs:
     name: njsscan code scanning
     steps:
     - name: Checkout the code
-      uses: actions/checkout@v4.2.2
-    - uses: actions/setup-python@v5.3.0
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
         python-version: '3.12'
     - name: nodejsscan scan
       id: njsscan
-      uses: ajinabraham/njsscan-action@master
+      uses: ajinabraham/njsscan-action@231750a435d85095d33be7d192d52ec650625146 # v9
       with:
         args: '. --sarif --output results.sarif || true'
     - name: Upload njsscan report
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@1c5b675653bb5c22dbe9b12b556ec555138e09fd # v4.38.1
       with:
         sarif_file: results.sarif
 ```
@@ -237,14 +243,29 @@ Add the following to the file `.gitlab-ci.yml`.
 
 ```yaml
 stages:
-    - test
+  - test
+
 njsscan:
-    image: python
-    before_script:
-        - pip3 install --upgrade njsscan
-    script:
-        - njsscan .
+  image: python:3.12
+  stage: test
+  before_script:
+    - pip3 install --upgrade njsscan
+  script:
+    - njsscan . --gitlab-sast -o gl-sast-report.json
+  artifacts:
+    when: always
+    reports:
+      sast: gl-sast-report.json
 ```
+
+Example command (local):
+
+```bash
+njsscan . --gitlab-sast -o gl-sast-report.json
+```
+
+This writes a native [GitLab SAST report](https://docs.gitlab.com/user/application_security/sast/) so findings appear in the Vulnerability Report / MR security widget without a SARIF converter.
+
 Example: [dvna with njsscan gitlab](https://gitlab.com/ajinabraham/dvna/-/jobs/602110439)
 
 
